@@ -3,8 +3,8 @@
 // @description Adds a button that lets you download YouTube videos.
 // @homepageURL https://github.com/gantt/downloadyoutube
 // @author Gantt
-// @version 1.8.8
-// @date 2016-09-02
+// @version 1.8.9
+// @date 2017-02-01
 // @namespace http://googlesystem.blogspot.com
 // @include http://www.youtube.com/*
 // @include https://www.youtube.com/*
@@ -12,8 +12,8 @@
 // @exclude https://www.youtube.com/embed/*
 // @match http://www.youtube.com/*
 // @match https://www.youtube.com/*
-// @match http://s.ytimg.com/yts/jsbin/html5player*
-// @match https://s.ytimg.com/yts/jsbin/html5player*
+// @match http://s.ytimg.com/yts/jsbin/*
+// @match https://s.ytimg.com/yts/jsbin/*
 // @match http://manifest.googlevideo.com/*
 // @match https://manifest.googlevideo.com/*
 // @match http://*.googlevideo.com/videoplayback*
@@ -195,10 +195,8 @@ function run() {
     isDecodeRuleUpdated=true;
   }
   if (scriptURL) {
-    if (scriptURL.indexOf('//')==0) {
-      var protocol=(document.location.protocol=='http:')?'http:':'https:';
-      scriptURL=protocol+scriptURL;
-    }
+    scriptURL = absoluteURL(scriptURL);
+    debug('DYVAM - Info: Full script URL: '+scriptURL);
     fetchSignatureScript(scriptURL);
   }
   
@@ -543,6 +541,12 @@ function run() {
     return (typeof n==='number' && n%1==0);
   }
   
+  function absoluteURL(url) {
+    var link = document.createElement('a');
+    link.href = url;
+    return link.href;
+  }
+  
   function getPref(name) { // cross-browser GM_getValue
     var a='', b='';
     try {a=typeof GM_getValue.toString; b=GM_getValue.toString()} catch(e){}    
@@ -750,7 +754,7 @@ function run() {
     var storageCode=getPref(STORAGE_CODE);
     if (!(/,0,|^0,|,0$|\-/.test(storageCode))) storageCode=null; // hack for only positive items
     if (storageCode && isValidSignatureCode(storageCode) && storageURL &&
-        scriptURL.replace(/^https?/i,'')==storageURL.replace(/^https?/i,'')) return;
+        scriptURL==absoluteURL(storageURL)) return;
     try {
       debug('DYVAM fetch '+scriptURL);
       isSignatureUpdatingStarted=true;    

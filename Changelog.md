@@ -1,5 +1,8 @@
 ## Download YouTube Videos as MP4: Changelog
 
+##### 1.8.9 (2017-02-01)
+* fixed URL detection
+
 ##### 1.8.8 (2016-09-02)
 * removed outdated formats
 * fixed manifest parsing (thanks, Elite2016) 
