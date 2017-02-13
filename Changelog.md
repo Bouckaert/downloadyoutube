@@ -1,5 +1,11 @@
 ## Download YouTube Videos as MP4: Changelog
 
+##### 1.8.10 (2017-02-13)
+- absoluteURL fix for manifest URL
+- fix for running 'run' function twice
+- removed Feather test (discontinued)
+- fix for separator bug (thanks, S Pangolin)
+
 ##### 1.8.9 (2017-02-01)
 * fixed URL detection
 

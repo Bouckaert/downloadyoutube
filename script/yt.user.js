@@ -3,8 +3,8 @@
 // @description Adds a button that lets you download YouTube videos.
 // @homepageURL https://github.com/gantt/downloadyoutube
 // @author Gantt
-// @version 1.8.9
-// @date 2017-02-01
+// @version 1.8.10
+// @date 2017-02-13
 // @namespace http://googlesystem.blogspot.com
 // @include http://www.youtube.com/*
 // @include https://www.youtube.com/*
@@ -71,8 +71,7 @@ function start() {
           mutations.forEach(function(mutation) {
               if(mutation.addedNodes!==null) {
                 for (var i=0; i<mutation.addedNodes.length; i++) {
-                    if (mutation.addedNodes[i].id=='watch7-container' ||
-                        mutation.addedNodes[i].id=='watch7-main-container') { // old value: movie_player
+                    if (mutation.addedNodes[i].id=='watch7-main-container') { // || id=='watch7-container'
                       run();
                       break;
                     }
@@ -88,15 +87,13 @@ function start() {
 }
 
 function onNodeInserted(e) { 
-    if (e && e.target && (e.target.id=='watch7-container' || 
-        e.target.id=='watch7-main-container')) { // old value: movie_player
+    if (e && e.target && (e.target.id=='watch7-main-container')) { // || id=='watch7-container'
       run();
   }
 }
   
 function run() {
   if (document.getElementById(CONTAINER_ID)) return; // check download container
-  if (document.getElementById('p') && document.getElementById('vo')) return; // Feather not supported
 
   var videoID, videoFormats, videoAdaptFormats, videoManifestURL, scriptURL=null;
   var isSignatureUpdatingStarted=false;
@@ -213,7 +210,7 @@ function run() {
                         
   // parse the formats map
   var sep1='%2C', sep2='%26', sep3='%3D';
-  if (videoFormats.indexOf(',')>-1) { 
+  if (videoFormats.indexOf(',')>-1||videoFormats.indexOf('&')>-1||videoFormats.indexOf('\\u0026')>-1) { 
     sep1=','; 
     sep2=(videoFormats.indexOf('&')>-1)?'&':'\\u0026'; 
     sep3='=';
@@ -441,10 +438,7 @@ function run() {
           videoManifestURL=videoManifestURL.replace('/s/'+matchSig+'/','/signature/'+decryptedSig+'/');
         }
       }
-      if (videoManifestURL.indexOf('//')==0) {
-        var protocol=(document.location.protocol=='http:')?'http:':'https:';
-        videoManifestURL=protocol+videoManifestURL;
-      }
+      videoManifestURL=absoluteURL(videoManifestURL);
       debug('DYVAM - Info: manifestURL '+videoManifestURL);
       crossXmlHttpRequest({
           method:'GET',
